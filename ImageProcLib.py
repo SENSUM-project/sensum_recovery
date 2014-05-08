@@ -125,7 +125,7 @@ modified: 2 Dec 2013
 Author: Dr. Shifeng Wang
 -------------------------------------------------------------------------------------------
 '''              
-def tentDetection_MM(strInputFile, resolution, maxTentArea, strOutputFile, strShape='box', iThresh_coeff=0):
+def tentDetection_MM(strInputFile, maxTentArea, strOutputFile, strShape='box', iThresh_coeff=0):
     
     # five step to do this
     # 1. opening-determine the square structure element (6-60 m2/resolution)
@@ -137,7 +137,11 @@ def tentDetection_MM(strInputFile, resolution, maxTentArea, strOutputFile, strSh
         
     objImg = osgeo.gdal.Open(strInputFile, GA_ReadOnly)
     nRasterCount = objImg.RasterCount
-    poDataset = objImg.ReadAsArray().astype(np.float) 
+    poDataset = objImg.ReadAsArray().astype(np.float)
+    geotransform = objImg.GetGeoTransform()
+    pixelWidth = np.fabs(geotransform[1])
+    pixelHeight = np.fabs(geotransform[5])
+    resolution = pixelWidth * pixelHeight
     # NoDataValue = objImg.GetRasterBand(1).GetNoDataValue()
     
     # gray scale image
@@ -204,13 +208,17 @@ modified: 2 Dec 2013
 Author: Dr. Shifeng Wang
 -------------------------------------------------------------------------------------------
 '''                
-def tentDetection_wt_mm(strInputFile, resolution, maxTentArea, strOutputFile, strShape='box', iThresh_coeff=0):
+def tentDetection_wt_mm(strInputFile, maxTentArea, strOutputFile, strShape='box', iThresh_coeff=0):
     import pywt
     import pymorph as pymm
     
     objImg = osgeo.gdal.Open(strInputFile, GA_ReadOnly)
     nRasterCount = objImg.RasterCount
-    poDataset = objImg.ReadAsArray().astype(np.float) 
+    poDataset = objImg.ReadAsArray().astype(np.float)
+    geotransform = objImg.GetGeoTransform()
+    pixelWidth = np.fabs(geotransform[1])
+    pixelHeight = np.fabs(geotransform[5])
+    resolution = pixelWidth * pixelHeight
     # NoDataValue = objImg.GetRasterBand(1).GetNoDataValue()
     
     # gray scale image
